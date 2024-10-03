@@ -1,0 +1,36 @@
+<div class="min-h-screen bg-gray-100 p-8">
+  <h2 class="text-3xl font-bold mb-6">Blog Posts</h2>
+
+  <div *ngFor="let post of posts" class="bg-white shadow-lg rounded-lg p-6 mb-6">
+    <h3 class="text-2xl font-bold mb-4">{{ post.title }}</h3>
+    <p>{{ post.content }}</p>
+
+    <!-- Like, Comment, Share, Edit, Delete Buttons -->
+    <div class="flex space-x-4 mt-4">
+      <button (click)="likePost(post.id, post.likes)" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+        Like ({{ post.likes }})
+      </button>
+      <button class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Comment</button>
+      <button (click)="sharePost(post)" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">Share</button>
+      <button (click)="updatePost(post)" class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600">Update</button>
+      <button (click)="deletePost(post.id)" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Delete</button>
+    </div>
+
+    <!-- Comment Section -->
+    <div class="mt-6">
+      <h4 class="font-semibold">Comments:</h4>
+
+      <!-- Display Existing Comments -->
+      <div *ngFor="let comment of comments[post.id]" class="bg-gray-100 p-3 mt-2 rounded-lg">
+        <p>{{ comment.text }}</p>
+        <small class="text-gray-600">{{ comment.createdAt?.toDate() | date:'short' }}</small>
+      </div>
+
+      <!-- Add a New Comment -->
+      <div class="mt-4">
+        <input [(ngModel)]="newComment[post.id]" class="border p-2 w-full rounded-lg" type="text" placeholder="Add a comment...">
+        <button (click)="addComment(post.id)" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
