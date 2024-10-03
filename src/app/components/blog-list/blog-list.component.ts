@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BlogService } from '../../services/blog.service';
 import { Router } from '@angular/router';
+import { Meta, Title } from '@angular/platform-browser';  
 
 @Component({
   selector: 'app-blog-list',
@@ -9,17 +10,35 @@ import { Router } from '@angular/router';
 })
 export class BlogListComponent implements OnInit {
   posts: any[] = [];
-  comments: { [key: string]: any[] } = {};  // Store comments for each post
-  newComment: { [key: string]: string } = {};  // Store new comment for each post
+  comments: { [key: string]: any[] } = {};  
+  newComment: { [key: string]: string } = {};  
 
-  constructor(private blogService: BlogService, private router: Router) {}
+  constructor(
+    private blogService: BlogService,
+    private router: Router,
+    private meta: Meta,               
+    private titleService: Title       
+  ) {}
 
   ngOnInit() {
+    
+    this.titleService.setTitle('Blog Posts');
+    this.meta.updateTag({ name: 'description', content: 'Explore a wide range of blog posts on various topics.' });
+
     // Fetch posts from Firestore
     this.blogService.getPosts().subscribe(data => {
       this.posts = data;
 
-      // For each post, get its comments
+      
+      if (this.posts.length > 0) {
+        const firstPost = this.posts[0];
+        this.titleService.setTitle(firstPost.title);
+        this.meta.updateTag({ name: 'description', content: firstPost.content.substring(0, 150) });
+        this.meta.updateTag({ property: 'og:title', content: firstPost.title });
+        this.meta.updateTag({ property: 'og:description', content: firstPost.content.substring(0, 150) });
+      }
+
+      // Fetch comments for each post
       this.posts.forEach(post => {
         this.blogService.getComments(post.id).subscribe(comments => {
           this.comments[post.id] = comments;
@@ -51,9 +70,8 @@ export class BlogListComponent implements OnInit {
     this.router.navigate(['/blog-form'], { state: { post } });
   }
 
-  // Share post (placeholder)
+  // Share post
   sharePost(post: any) {
-    console.log('Sharing post:', post);
     alert(`Sharing post: ${post.title}`);
   }
 
@@ -67,7 +85,7 @@ export class BlogListComponent implements OnInit {
 
       this.blogService.addComment(postId, commentData).then(() => {
         console.log('Comment added');
-        this.newComment[postId] = '';  // Clear comment input after submission
+        this.newComment[postId] = '';  
       }).catch(err => {
         console.error('Error adding comment', err);
       });

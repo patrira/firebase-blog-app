@@ -25,3 +25,17 @@
     </form>
   </div>
 </div>
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "{{ post.title }}",
+    "articleBody": "{{ post.content }}",
+    "author": {
+      "@type": "Person",
+      "name": "Blog Author"
+    },
+    "datePublished": "{{ post.createdAt | date:'yyyy-MM-dd' }}"
+  }
+  </script>
+  
