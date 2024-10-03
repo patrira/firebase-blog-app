@@ -6,7 +6,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class BlogService {
-  private collectionPath = 'blogPosts';  // Firestore collection for blog posts
+  // Firestore collection for blog posts
+  private collectionPath = 'blogPosts';  
 
   constructor(private firestore: AngularFirestore) {}
 

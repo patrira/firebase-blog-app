@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
@@ -13,6 +13,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { AuthGuard } from './services/auth.guard';
 import { BlogListComponent } from './components/blog-list/blog-list.component';
 import { BlogFormComponent } from './components/blog-form/blog-form.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
   declarations: [
@@ -26,11 +27,17 @@ import { BlogFormComponent } from './components/blog-form/blog-form.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    AngularFireModule.initializeApp(environment.firebaseConfig),  // Linkinking firebase to my local project
+    AngularFireModule.initializeApp(environment.firebaseConfig),  
     AngularFireAuthModule,
     AngularFirestoreModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    })
     
   ],
   providers: [
