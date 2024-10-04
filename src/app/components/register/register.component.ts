@@ -13,8 +13,9 @@ export class RegisterComponent {
   submitted = false;
   registerError: string = '';
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+  constructor(public fb: FormBuilder, public authService: AuthService, public router: Router) { 
     this.registerForm = this.fb.group({
+      name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required]
@@ -33,13 +34,14 @@ export class RegisterComponent {
   onSubmit() {
     this.submitted = true;
 
-    // Stop if the form is invalid
     if (this.registerForm.invalid) {
       return;
     }
 
-    this.authService.register(this.f['email'].value, this.f['password'].value).then(() => {
-      this.router.navigate(['/login']);
+    const { name, email, password } = this.registerForm.value;
+
+    this.authService.register(name, email, password).then(() => {
+      this.router.navigate(['/home']);
     }).catch(err => {
       this.registerError = 'Registration failed. Please try again.';
     });
