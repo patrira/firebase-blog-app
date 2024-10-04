@@ -1,45 +1,52 @@
-<div class="min-h-screen bg-gray-100">
+<div class="min-h-screen bg-gradient-to-b from-black via-gray-900 to-yellow-500">
 
   <!-- Navbar -->
-  <nav class="bg-white shadow-lg">
-    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-
-      <!-- Logo on the Left -->
-      <div class="flex items-center space-x-3">
+  <nav class="bg-black text-yellow-300 p-4 shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+      
+      <!-- Left: Logo -->
+      <div class="flex items-center">
         <img src="https://via.placeholder.com/40" alt="Logo" class="h-10 w-10">
-        <span class="text-xl font-bold">Blog Platform</span>
+        <span class="ml-3 text-xl font-bold">Blog Platform</span>
       </div>
 
-      <!-- Create Post Button in the Middle -->
-      <div>
-        <a routerLink="/blog-form" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Create Post</a>
+      <!-- Right: Create Blog, Login, Sign Up -->
+      <div class="flex space-x-6">
+        <a routerLink="/blog-form" class="px-4 py-2 bg-yellow-300 text-black font-semibold rounded-lg hover:bg-yellow-400 hover:text-gray-900 transition">
+          Create Blog
+        </a>
+        <a routerLink="/login" class="px-4 py-2 bg-transparent border border-yellow-300 text-yellow-300 font-semibold rounded-lg hover:bg-yellow-400 hover:text-black transition">
+          Login
+        </a>
+        <a routerLink="/register" class="px-4 py-2 bg-transparent border border-yellow-300 text-yellow-300 font-semibold rounded-lg hover:bg-yellow-400 hover:text-black transition">
+          Sign Up
+        </a>
       </div>
 
-      <!-- Logout Button on the Right -->
-      <div>
-        <button (click)="logout()" class="text-white bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600 transition">
-          Logout
-        </button>
-      </div>
     </div>
   </nav>
 
-  <!-- Main Content: List of Blog Posts -->
-  <div class="container mx-auto py-8 px-4">
-    <h2 class="text-3xl font-bold mb-6">Blog Posts</h2>
+  <!-- Main Content -->
+  <div class="container mx-auto py-12 px-6">
+    <h2 class="text-4xl font-extrabold text-yellow-200 mb-8 text-center">Explore Our Latest Blogs</h2>
 
-    <div *ngFor="let post of posts" class="bg-white shadow-lg rounded-lg p-6 mb-6">
-      <h3 class="text-2xl font-bold mb-4">{{ post.title }}</h3>
-      <p>{{ post.content }}</p>
+    <!-- Blog Post List -->
+    <div class="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-8">
+      <div *ngFor="let post of posts" class="bg-white shadow-md rounded-lg overflow-hidden">
+        <div class="p-6">
+          <h3 class="text-2xl font-semibold text-black mb-4">{{ post.title }}</h3>
+          <p class="text-gray-700 mb-4">{{ post.content | slice:0:150 }}...</p>
 
-      <!-- Like, Edit, Delete Buttons -->
-      <div class="flex space-x-4 mt-4">
-        <button (click)="likePost(post.id, post.likes)" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-          Like ({{ post.likes }})
-        </button>
-        <button (click)="deletePost(post.id)" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
-          Delete
-        </button>
+          <!-- Actions: Like, Delete -->
+          <div class="flex justify-between items-center">
+            <button (click)="likePost(post.id, post.likes)" class="bg-yellow-300 text-black px-4 py-2 rounded-lg font-semibold hover:bg-yellow-400 transition">
+              Like ({{ post.likes }})
+            </button>
+            <button (click)="deletePost(post.id)" class="text-red-500 font-semibold hover:text-red-600 transition">
+              Delete
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

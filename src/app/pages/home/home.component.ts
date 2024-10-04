@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BlogService } from '../../services/blog.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { Meta, Title } from '@angular/platform-browser';  
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-home',
@@ -16,14 +16,17 @@ export class HomeComponent implements OnInit {
     private blogService: BlogService,
     private authService: AuthService,
     private router: Router,
-    private meta: Meta,               
-    private titleService: Title       
+    private meta: Meta,
+    private titleService: Title
   ) {}
 
   ngOnInit() {
     // Set meta tags for the homepage
     this.titleService.setTitle('Home - Blog Platform');
-    this.meta.updateTag({ name: 'description', content: 'Welcome to the blog platform, where you can read and share amazing blog posts.' });
+    this.meta.updateTag({
+      name: 'description',
+      content: 'Welcome to the blog platform, where you can read and share amazing blog posts.'
+    });
 
     // Fetch blog posts from Firestore
     this.blogService.getPosts().subscribe(data => {
@@ -34,7 +37,7 @@ export class HomeComponent implements OnInit {
   // Logout user
   logout() {
     this.authService.logout().then(() => {
-      this.router.navigate(['/login']);  
+      this.router.navigate(['/login']);
     }).catch(err => {
       console.error('Logout error', err);
     });

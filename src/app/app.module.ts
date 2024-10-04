@@ -14,6 +14,7 @@ import { AuthGuard } from './services/auth.guard';
 import { BlogListComponent } from './components/blog-list/blog-list.component';
 import { BlogFormComponent } from './components/blog-form/blog-form.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     RegisterComponent,
     HomeComponent,
     BlogListComponent,
-    BlogFormComponent
+    BlogFormComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
