@@ -8,13 +8,13 @@ import { AuthGuard } from './services/auth.guard';
 import { BlogFormComponent } from './components/blog-form/blog-form.component';
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent },
+  { path: 'login', component: LoginComponent , canActivate: [AuthGuard]},
   { path: 'register', component: RegisterComponent },
   { path: 'blog-form', component: BlogFormComponent, canActivate: [AuthGuard] }, 
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] }, 
-  { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },  
-  { path: '', redirectTo: 'login', pathMatch: 'full' }, 
-  { path: '**', redirectTo: 'login' }
+  { path: 'profile', component: ProfileComponent },  
+  { path: '', redirectTo: 'home', pathMatch: 'full' }, 
+  { path: '**', redirectTo: 'home' }
 ];
 
 @NgModule({

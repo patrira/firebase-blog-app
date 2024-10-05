@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-profile',
@@ -9,35 +8,23 @@ import { Meta, Title } from '@angular/platform-browser';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
-  user: any;
+  user: any = null;
 
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private meta: Meta,
-    private titleService: Title
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
-    
-    this.titleService.setTitle('Profile - Blog Platform');
-    this.meta.updateTag({ name: 'description', content: 'Your profile details on Blog Platform.' });
-
-    
+    // Get logged-in user details
     this.authService.isLoggedIn().subscribe(user => {
       this.user = user;
-      if (!this.user) {
-        this.router.navigate(['/login']);  
-      }
     });
   }
 
-  // Logout user
   logout() {
     this.authService.logout().then(() => {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/home']);  
     }).catch(err => {
-      console.error('Logout error', err);
+      console.error('Error logging out', err);
     });
   }
 }
+
