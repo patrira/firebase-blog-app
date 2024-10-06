@@ -1,16 +1,14 @@
 <div class="min-h-screen bg-gradient-to-b from-black via-gray-900 to-yellow-500">
-
-  <!-- Fixed Navbar -->
+  <!-- Navbar -->
   <nav class="bg-black text-yellow-300 p-4 shadow-md fixed w-full top-0 z-10">
     <div class="container mx-auto flex justify-between items-center">
-      
-      <!-- Left: Logo -->
+      <!-- Logo -->
       <div class="flex items-center">
         <img src="https://via.placeholder.com/40" alt="Logo" class="h-10 w-10">
         <span class="ml-3 text-xl font-bold">Blog Platform</span>
       </div>
 
-      <!-- Right: Create Blog and Auth Actions -->
+      <!-- Auth Actions -->
       <div class="flex space-x-6">
         <a routerLink="/blog-form" class="px-4 py-2 bg-yellow-300 text-black font-semibold rounded-lg hover:bg-yellow-400 transition">
           Create Blog
@@ -23,58 +21,45 @@
           <button (click)="logout()" class="px-4 py-2 bg-transparent border border-yellow-300 text-yellow-300 font-semibold rounded-lg hover:bg-yellow-400 transition">Logout</button>
         </ng-container>
 
-        <!-- If not logged in, show Login and Sign Up -->
         <ng-template #loggedOut>
-          <a routerLink="/login" class="px-4 py-2 bg-transparent border border-yellow-300 text-yellow-300 font-semibold rounded-lg hover:bg-yellow-400 hover:text-black transition">
-            Login
-          </a>
-          <a routerLink="/register" class="px-4 py-2 bg-transparent border border-yellow-300 text-yellow-300 font-semibold rounded-lg hover:bg-yellow-400 hover:text-black transition">
-            Sign Up
-          </a>
+          <a routerLink="/login" class="px-4 py-2 bg-transparent border border-yellow-300 text-yellow-300 font-semibold rounded-lg hover:bg-yellow-400 transition">Login</a>
+          <a routerLink="/register" class="px-4 py-2 bg-transparent border border-yellow-300 text-yellow-300 font-semibold rounded-lg hover:bg-yellow-400 transition">Sign Up</a>
         </ng-template>
       </div>
-
     </div>
   </nav>
 
-  <!-- Main Content -->
+  <!-- Blog Post List -->
   <div class="container mx-auto py-12 px-6 pt-24">
     <h2 class="text-4xl font-extrabold text-yellow-200 mb-8 text-center">Explore Our Latest Blogs</h2>
 
-    <!-- Blog Post List -->
+    <!-- Blog Posts -->
     <div class="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-8">
       <div *ngFor="let post of posts" class="bg-white shadow-md rounded-lg overflow-hidden relative">
-
-        <!-- Three vertical dots for Update/Delete -->
-        <div class="absolute top-2 right-2">
-          <div class="relative">
-            <button class="text-gray-500 hover:text-black">
-              <i class="fas fa-ellipsis-v"></i>  <!-- Font Awesome icon for 3 dots -->
-            </button>
-            <div class="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg">
-              <a (click)="updatePost(post)" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Update</a>
-              <a (click)="deletePost(post.id)" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Delete</a>
-            </div>
-          </div>
-        </div>
-
         <div class="p-6">
           <h3 class="text-2xl font-semibold text-black mb-4">{{ post.title }}</h3>
           <p class="text-gray-700 mb-4">{{ post.content | slice:0:150 }}...</p>
 
-          <!-- Actions: Like, Comment, Read More -->
-          <div class="flex space-x-4">
-            <button (click)="likePost(post.id, post.likes)" class="flex items-center space-x-2 text-yellow-500 hover:text-yellow-600">
-              <i class="fas fa-thumbs-up"></i>  <!-- Like icon -->
-              <span>Like ({{ post.likes }})</span>
+          <!-- Inline Buttons: Like, Comment, Read More, Update, Delete -->
+          <div class="flex flex-wrap items-center space-x-2 space-y-2 lg:space-y-0">
+            <button (click)="likePost(post.id, post.likes)" class="text-yellow-500 hover:text-yellow-600">
+              <i class="fas fa-thumbs-up"></i> Like ({{ post.likes }})
             </button>
-            <button (click)="addComment(post.id)" class="flex items-center space-x-2 text-yellow-500 hover:text-yellow-600">
-              <i class="fas fa-comment"></i>  <!-- Comment icon -->
-              <span>Comment</span>
+
+            <button (click)="addComment(post.id)" class="text-yellow-500 hover:text-yellow-600">
+              <i class="fas fa-comment"></i> Comment ({{ post.comments?.length || 0 }})
             </button>
-            <button (click)="readMore(post)" class="flex items-center space-x-2 text-blue-500 hover:text-blue-600">
-              <i class="fas fa-book-open"></i>  <!-- Read More icon -->
-              <span>Read More</span>
+
+            <button (click)="readMore(post)" class="text-blue-500 hover:text-blue-600">
+              <i class="fas fa-book-open"></i> Read More
+            </button>
+
+            <button (click)="updatePost(post)" class="text-yellow-500 hover:text-yellow-600">
+              <i class="fas fa-edit"></i> Update
+            </button>
+
+            <button (click)="deletePost(post.id)" class="text-red-500 hover:text-red-600">
+              <i class="fas fa-trash"></i> Delete
             </button>
           </div>
 
@@ -89,8 +74,6 @@
           <!-- Comments Section -->
           <div class="mt-4">
             <h4 class="font-semibold text-gray-700">Comments:</h4>
-
-            <!-- Display Comments -->
             <div *ngFor="let comment of post.comments" class="bg-gray-100 p-3 mt-2 rounded-lg">
               <p>{{ comment.text }}</p>
               <small class="text-gray-600">{{ comment.createdAt?.toDate() | date:'short' }}</small>
@@ -104,6 +87,17 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Modal for Full Blog Post -->
+  <div *ngIf="selectedPost" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20">
+    <div class="bg-white rounded-lg p-8 max-w-lg w-full relative">
+      <button (click)="closeModal()" class="absolute top-4 right-4">
+        <i class="fas fa-times"></i>
+      </button>
+      <h2 class="text-2xl font-bold mb-4">{{ selectedPost.title }}</h2>
+      <p>{{ selectedPost.content }}</p>
     </div>
   </div>
 

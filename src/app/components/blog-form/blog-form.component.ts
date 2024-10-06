@@ -41,19 +41,22 @@ export class BlogFormComponent implements OnInit {
       return;
     }
 
-    const postData = {
-      title: this.blogForm.value.title,
-      content: this.blogForm.value.content,
-      imageUrl: this.blogForm.value.imageUrl,
-      videoUrl: this.blogForm.value.videoUrl,
-      createdAt: new Date(),
-      likes: 0
-    };
+    const postData = this.blogForm.value;
 
-    this.blogService.createPost(postData).then(() => {
-      this.router.navigate(['/home']);
-    }).catch(err => {
-      console.error('Error creating post', err);
-    });
+    if (postData.id) {
+      // Update existing post
+      this.blogService.updatePost(postData.id, postData).then(() => {
+        this.router.navigate(['/home']);
+      }).catch(err => {
+        console.error('Error updating post', err);
+      });
+    } else {
+      // Create new post
+      this.blogService.createPost(postData).then(() => {
+        this.router.navigate(['/home']);
+      }).catch(err => {
+        console.error('Error creating post', err);
+      });
+    }
   }
 }

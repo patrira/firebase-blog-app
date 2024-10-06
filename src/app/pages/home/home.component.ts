@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { BlogService } from '../../services/blog.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
@@ -10,11 +10,12 @@ import { Subscription } from 'rxjs';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   posts: any[] = [];
   user: any = null;
   newComment: { [key: string]: string } = {};
-  authSubscription!: Subscription;  // Subscription for auth state
+  selectedPost: any = null;  // For Read More modal
+  authSubscription!: Subscription;
 
   constructor(
     private blogService: BlogService,
@@ -32,7 +33,7 @@ export class HomeComponent implements OnInit {
       content: 'Welcome to the blog platform, where you can read and share amazing blog posts.'
     });
 
-    // Subscribe to auth state to dynamically update UI
+    
     this.authSubscription = this.authService.isLoggedIn().subscribe(user => {
       this.user = user;
     });
@@ -72,10 +73,9 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  // Update a blog post (for UI logic)
+  // Update a blog post (navigate to blog form for editing)
   updatePost(post: any) {
-    alert(`Updating post: ${post.title}`);
-    // Additional inline editing logic can go here
+    this.router.navigate(['/blog-form'], { state: { post } });
   }
 
   // Add comment to a post
@@ -83,27 +83,40 @@ export class HomeComponent implements OnInit {
     if (this.newComment[postId]) {
       const commentData = {
         text: this.newComment[postId],
-        createdAt: new Date()
+        createdAt: new Date(),
+        displayName: this.user.displayName || 'Anonymous',
+        email: this.user.email
       };
 
       this.blogService.addComment(postId, commentData).then(() => {
         console.log('Comment added');
         this.newComment[postId] = '';  // Clear the input after comment
+
+        // Fetch updated comments to reflect new count
+        this.blogService.getComments(postId).subscribe(comments => {
+          this.posts.find(p => p.id === postId).comments = comments;
+        });
       }).catch((err: any) => {
         console.error('Error adding comment', err);
       });
     }
   }
 
-  // Read more (Navigate to full post page)
+  // Read more (Show full post in modal)
   readMore(post: any) {
-    alert(`Reading more about: ${post.title}`);
+    this.selectedPost = post;
+  }
+
+  // Close Read More modal and navigate back to home
+  closeModal() {
+    this.selectedPost = null;
+    this.router.navigate(['/home']);
   }
 
   // Logout user and redirect to home
   logout() {
     this.authService.logout().then(() => {
-      this.router.navigate(['/home']);  // Redirect to home after logout
+      this.router.navigate(['/home']);  
     }).catch((err: any) => {
       console.error('Logout error', err);
     });
