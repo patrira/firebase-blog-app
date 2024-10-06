@@ -1,37 +1,33 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BlogService } from '../../services/blog.service';
 import { Router } from '@angular/router';
-import { Meta, Title } from '@angular/platform-browser';  // Import Meta and Title services
 
 @Component({
   selector: 'app-blog-form',
   templateUrl: './blog-form.component.html',
   styleUrls: ['./blog-form.component.css']
 })
-export class BlogFormComponent {
+export class BlogFormComponent implements OnInit {
   blogForm: FormGroup;
   submitted = false;
 
-  constructor(
-    private fb: FormBuilder,
-    private blogService: BlogService,
-    private router: Router,
-    private meta: Meta,               // Inject Meta service
-    private titleService: Title       // Inject Title service
-  ) {
+  constructor(private fb: FormBuilder, private blogService: BlogService, public router: Router) {
     this.blogForm = this.fb.group({
       title: ['', Validators.required],
       content: ['', Validators.required],
+      imageUrl: [''],
+      videoUrl: [''],
       createdAt: [new Date()],
-      likes: [0]  // Set default likes to 0
+      likes: [0]
     });
   }
 
   ngOnInit() {
-    // Set meta tags for the blog form (create post) page
-    this.titleService.setTitle('Create a New Blog Post');
-    this.meta.updateTag({ name: 'description', content: 'Create a new blog post and share your thoughts with the world.' });
+    const state = this.router.getCurrentNavigation()?.extras.state as { post: any };
+    if (state && state.post) {
+      this.blogForm.patchValue(state.post);
+    }
   }
 
   get f() {
@@ -45,19 +41,22 @@ export class BlogFormComponent {
       return;
     }
 
-    // Prepare the post data
-    const postData = {
-      title: this.blogForm.value.title,
-      content: this.blogForm.value.content,
-      createdAt: new Date(),
-      likes: 0
-    };
+    const postData = this.blogForm.value;
 
-    // Create a new blog post and store it in Firestore
-    this.blogService.createPost(postData).then(() => {
-      this.router.navigate(['/home']);  // Redirect to home after creation
-    }).catch(err => {
-      console.error('Error creating post', err);
-    });
+    if (postData.id) {
+      // Update existing post
+      this.blogService.updatePost(postData.id, postData).then(() => {
+        this.router.navigate(['/home']);
+      }).catch(err => {
+        console.error('Error updating post', err);
+      });
+    } else {
+      // Create new post
+      this.blogService.createPost(postData).then(() => {
+        this.router.navigate(['/home']);
+      }).catch(err => {
+        console.error('Error creating post', err);
+      });
+    }
   }
 }
