@@ -1,44 +1,37 @@
-<div class="min-h-screen bg-gray-100 flex items-center justify-center">
-    <div class="bg-white shadow-lg rounded-lg p-8 max-w-lg w-full">
-      <h2 class="text-2xl font-bold text-center mb-6">Login</h2>
-      
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <!-- Email Field with Validation -->
-        <div class="mb-4">
-          <label class="block text-gray-700 font-semibold mb-2" for="email">Email</label>
-          <input id="email" formControlName="email" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" type="email" placeholder="Enter your email">
-          <div *ngIf="submitted && f['email'].errors" class="text-red-500 text-sm mt-1">
-            <div *ngIf="f['email'].errors['required']">Email is required.</div>
-            <div *ngIf="f['email'].errors['email']">Please enter a valid email address.</div>
-          </div>
+<div class="min-h-screen bg-gradient-to-b from-black via-gray-900 to-yellow-500 flex items-center justify-center">
+  <div class="bg-white shadow-lg rounded-lg p-8 max-w-lg w-full">
+    <h2 class="text-3xl font-bold text-center mb-6">Login</h2>
+    
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="mb-4">
+        <label for="email" class="block text-gray-700 font-semibold">Email</label>
+        <input formControlName="email" type="email" id="email" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400">
+        <div *ngIf="submitted && f['email'].errors" class="text-red-500 text-sm mt-1">
+          <div *ngIf="f['email'].errors['required']">Email is required.</div>
+          <div *ngIf="f['email'].errors['email']">Enter a valid email.</div>
         </div>
-  
-        <!-- Password Field with Validation -->
-        <div class="mb-6">
-          <label class="block text-gray-700 font-semibold mb-2" for="password">Password</label>
-          <input id="password" formControlName="password" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" type="password" placeholder="Enter your password">
-          <div *ngIf="submitted && f['password'].errors" class="text-red-500 text-sm mt-1">
-            <div *ngIf="f['password'].errors['required']">Password is required.</div>
-            <div *ngIf="f['password'].errors['minlength']">Password must be at least 6 characters long.</div>
-          </div>
+      </div>
+
+      <div class="mb-6">
+        <label for="password" class="block text-gray-700 font-semibold">Password</label>
+        <input formControlName="password" type="password" id="password" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400">
+        <div *ngIf="submitted && f['password'].errors" class="text-red-500 text-sm mt-1">
+          <div *ngIf="f['password'].errors['required']">Password is required.</div>
+          <div *ngIf="f['password'].errors['minlength']">Password must be at least 6 characters long.</div>
         </div>
-  
-        <!-- Login Button -->
-        <button class="w-full bg-blue-500 text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition">Login</button>
-      </form>
-  
-      <!-- Display Login Errors -->
-      <div *ngIf="loginError" class="text-red-500 text-sm mt-3">{{ loginError }}</div>
-  
-      <!-- Google Sign-In Button -->
-      <div class="mt-6 text-center">
-        <button (click)="googleSignIn()" class="w-full bg-red-500 text-white py-3 rounded-lg hover:bg-red-600 transition">Sign in with Google</button>
       </div>
-  
-      <!-- Sign Up Link -->
-      <div class="mt-4 text-center">
-        <p>Don't have an account? <a [routerLink]="['/register']" class="text-blue-500 hover:underline">Sign up here</a></p>
-      </div>
+
+      <button class="w-full bg-yellow-300 text-black font-bold py-3 rounded-lg hover:bg-yellow-400 transition">Login</button>
+    </form>
+
+    <div *ngIf="loginError" class="text-red-500 text-sm mt-3 text-center">{{ loginError }}</div>
+
+    <div class="mt-6 text-center">
+      <button (click)="googleSignIn()" class="w-full bg-red-500 text-white py-3 rounded-lg hover:bg-red-600 transition">Sign in with Google</button>
+    </div>
+
+    <div class="mt-4 text-center">
+      <p>Don't have an account? <a routerLink="/register" class="text-yellow-300 hover:underline">Sign up here</a></p>
     </div>
   </div>
-  
+</div>
